@@ -1,0 +1,24 @@
+{
+  "name": "yami-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OleksandrKochenko/yami-backend.git"
+  },
+  "keywords": [],
+  "author": "Alex K",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OleksandrKochenko/yami-backend/issues"
+  },
+  "homepage": "https://github.com/OleksandrKochenko/yami-backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  }
+}
