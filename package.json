@@ -2,7 +2,7 @@
   "name": "yami-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "engines": {
     "node": ">=16.0.0"
   },
