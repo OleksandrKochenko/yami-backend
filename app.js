@@ -18,7 +18,7 @@ app.use((req, res) => {
 });
 
 // errors handler of express
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   const { status = 500, message } = err;
   res.status(status).json({ message });
 });
