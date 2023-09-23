@@ -23,4 +23,4 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-app.listen(4000, () => console.log("Server running on port 4000 ")); // starts running server
+module.exports = app;
