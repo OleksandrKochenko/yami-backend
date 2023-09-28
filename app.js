@@ -5,6 +5,7 @@ require("dotenv").config();
 
 const categoriesRouter = require("./routes/api/categories");
 const recipesRouter = require("./routes/api/recipes");
+const authRouter = require("./routes/auth/auth");
 
 const app = express(); // creates web-server
 
@@ -16,6 +17,8 @@ app.use(cors()); // to available cross-domain requests (CORS)
 app.use(express.json()); // sets body parser to req.body
 
 app.use(express.static("public"));
+
+app.use("/auth", authRouter);
 
 app.use("/api/categories", categoriesRouter);
 

@@ -1,5 +1,5 @@
 const { HttpError } = require("../helpers");
-const Recipe = require("../models/pecipe");
+const Recipe = require("../models/recipe");
 
 const getAllRecipes = async (req, res, next) => {
   try {

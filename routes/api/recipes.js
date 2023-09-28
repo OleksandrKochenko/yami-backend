@@ -4,7 +4,7 @@ const {
   getAllRecipes,
   getRecipeById,
 } = require("../../controllers/recipesCtrl");
-const isValidId = require("../../middlewares/isValidId");
+const { isValidId } = require("../../middlewares/");
 
 router.get("/", getAllRecipes);
 
