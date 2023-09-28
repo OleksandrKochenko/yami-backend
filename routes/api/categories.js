@@ -1,11 +1,14 @@
 const express = require("express");
 const router = express.Router();
 
-const categories = require("../../categories");
+const {
+  getAllCategories,
+  addCategory,
+} = require("../../controllers/categoriesCtrl");
 
-router.get("/", (req, res) => {
-  res.json(categories);
-});
+router.get("/", getAllCategories);
+
+router.post("/", addCategory);
 
 router.get("/:id", (req, res) => {
   res.json(categories[0]);
