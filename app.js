@@ -6,6 +6,7 @@ require("dotenv").config();
 const categoriesRouter = require("./routes/api/categories");
 const recipesRouter = require("./routes/api/recipes");
 const authRouter = require("./routes/auth/auth");
+const frontPageRouter = require("./routes/api/frontPage");
 
 const app = express(); // creates web-server
 
@@ -23,6 +24,8 @@ app.use("/auth", authRouter);
 app.use("/api/categories", categoriesRouter);
 
 app.use("/api/recipes", recipesRouter);
+
+app.use("/api/front-page", frontPageRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" }); // send json data instead of html when path not found (not exist)

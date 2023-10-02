@@ -3,10 +3,12 @@ const Recipe = require("../models/recipe");
 
 const getAllRecipes = async (req, res, next) => {
   try {
-    const result = await Recipe.find();
+    const { category } = req.query;
+
+    const result = await Recipe.find({ category });
     // const result = await Recipe.find({}, 'title category'); // returns all recipes only with fields 'title' and 'category'
     // const result = await Recipe.find({}, '-area -youtube'); // returns all recipes without fields 'area' and 'youtube'
-    res.json(result);
+    res.json({ category, result });
   } catch (error) {
     next(error);
   }
@@ -26,7 +28,31 @@ const getRecipeById = async (req, res, next) => {
   }
 };
 
+// gets recipes by array of ids.
+const getManyRecipesByIds = async (req, res, next) => {
+  try {
+    const { idsArray } = req.body; // Source of ids should be changed from body to user's favorite recipes array of ids
+    const result = await Recipe.find({ _id: { $in: idsArray } });
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getMyRecipes = async (req, res, next) => {
+  try {
+    const { _id: owner } = req.user;
+    console.log(owner);
+    const result = await Recipe.find({ owner }).populate("owner", "name email");
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllRecipes,
   getRecipeById,
+  getManyRecipesByIds,
+  getMyRecipes,
 };

@@ -5,6 +5,9 @@ const {
   getAllCategories,
   addCategory,
 } = require("../../controllers/categoriesCtrl");
+const authenticate = require("../../middlewares/authenticate");
+
+router.use(authenticate); // middleware that authentikate user by token, applies for any routs below
 
 router.get("/", getAllCategories);
 
