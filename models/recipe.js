@@ -15,6 +15,7 @@ const recipeSchema = Schema(
     tags: [],
     ingredients: { type: [], required: true },
     owner: { type: Schema.Types.ObjectId, ref: "user" },
+    favorite: [{ type: Schema.Types.ObjectId, ref: "user" }],
   },
   { versionKey: false, timestamps: true }
 );

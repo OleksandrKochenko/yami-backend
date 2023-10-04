@@ -4,17 +4,18 @@ const router = express.Router();
 const {
   getAllCategories,
   addCategory,
+  getCategoriesForLearning,
 } = require("../../controllers/categoriesCtrl");
 const authenticate = require("../../middlewares/authenticate");
 
-router.use(authenticate); // middleware that authentikate user by token, applies for any routs below
+router.use(authenticate); // middleware that authenticate user by token, applies for any routs below
 
 router.get("/", getAllCategories);
 
-router.post("/", addCategory);
+// learning stuff below, does not used in app
 
-router.get("/:id", (req, res) => {
-  res.json(categories[0]);
-});
+router.get("/learn", getCategoriesForLearning);
+
+router.post("/", addCategory);
 
 module.exports = router;

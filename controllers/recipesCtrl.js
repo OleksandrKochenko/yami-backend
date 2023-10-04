@@ -3,12 +3,23 @@ const Recipe = require("../models/recipe");
 
 const getAllRecipes = async (req, res, next) => {
   try {
-    const { category } = req.query;
+    const { page = 1, limit = 8, category, title, ingredient } = req.query;
+    const skip = (page - 1) * limit;
+    const regex = new RegExp(`.*${title}.*`, "i");
 
-    const result = await Recipe.find({ category });
+    const recipes = await Recipe.find(
+      {
+        $or: [{ title: regex }, { category }, { "ingredients.id": ingredient }], // different rules for search depends on query params
+      },
+      "",
+      {
+        skip,
+        limit,
+      }
+    );
     // const result = await Recipe.find({}, 'title category'); // returns all recipes only with fields 'title' and 'category'
     // const result = await Recipe.find({}, '-area -youtube'); // returns all recipes without fields 'area' and 'youtube'
-    res.json({ category, result });
+    res.json({ regex: { value: regex.source }, recipes });
   } catch (error) {
     next(error);
   }
@@ -28,6 +39,37 @@ const getRecipeById = async (req, res, next) => {
   }
 };
 
+const getMyRecipes = async (req, res, next) => {
+  try {
+    const { _id: owner } = req.user;
+    const { page = 2, limit = 1 } = req.query;
+    const skip = (page - 1) * limit;
+    const result = await Recipe.find({ owner }, "", {
+      skip,
+      limit,
+    }).populate("owner", "name email");
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getFavorites = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+    const { page = 1, limit = 8 } = req.query;
+    const skip = (page - 1) * limit;
+    const recipes = await Recipe.find({ favorite: { $in: [_id] } }, "", {
+      skip,
+      limit,
+    });
+    res.json(recipes);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// learning stuff below, does not used in app
 // gets recipes by array of ids.
 const getManyRecipesByIds = async (req, res, next) => {
   try {
@@ -39,20 +81,10 @@ const getManyRecipesByIds = async (req, res, next) => {
   }
 };
 
-const getMyRecipes = async (req, res, next) => {
-  try {
-    const { _id: owner } = req.user;
-    console.log(owner);
-    const result = await Recipe.find({ owner }).populate("owner", "name email");
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
-};
-
 module.exports = {
   getAllRecipes,
   getRecipeById,
-  getManyRecipesByIds,
+  getFavorites,
   getMyRecipes,
+  getManyRecipesByIds,
 };

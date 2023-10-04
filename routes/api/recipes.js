@@ -5,15 +5,18 @@ const {
   getRecipeById,
   getManyRecipesByIds,
   getMyRecipes,
+  getFavorites,
 } = require("../../controllers/recipesCtrl");
 const { isValidId } = require("../../middlewares/");
 const authenticate = require("../../middlewares/authenticate");
 
+router.use(authenticate); // middleware that authenticate user by token, applies for any routs below
+
 router.get("/", getAllRecipes);
 
-router.get("/favorites", getManyRecipesByIds);
+router.get("/favorites", getFavorites);
 
-router.get("/myRecipes", authenticate, getMyRecipes);
+router.get("/my-recipes", getMyRecipes);
 
 router.get("/:id", isValidId, getRecipeById);
 
