@@ -28,12 +28,12 @@ const getAllRecipes = async (req, res, next) => {
 const getRecipeById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await Recipe.findById(id);
+    const recipe = await Recipe.findById(id);
     //const result = await Recipe.findOne({ _id: id }); // returns recipe with field '_id' equal 'id' from params (fits for any other fields)
-    if (!result) {
+    if (!recipe) {
       throw HttpError(404, `Recipe with id ${id} not found`);
     }
-    res.json(result);
+    res.json(recipe);
   } catch (error) {
     next(error);
   }
@@ -69,6 +69,53 @@ const getFavorites = async (req, res, next) => {
   }
 };
 
+const addFavorite = async (req, res, next) => {
+  try {
+    const { _id: userId } = req.user;
+    const { id: recipeId } = req.params;
+
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) throw HttpError(404, `Recipe with id ${recipeId} not found`);
+
+    const alreadyFavoriteRecipe = await Recipe.findOne({
+      _id: recipeId,
+      favorite: { $in: userId },
+    });
+    if (alreadyFavoriteRecipe)
+      throw HttpError(409, `Recipe with id ${recipeId} already in favorite`);
+
+    await Recipe.findByIdAndUpdate(
+      { _id: recipeId },
+      { $push: { favorite: userId } }
+    );
+    res.json({
+      message: `Recipe with id ${recipeId} added to favorites by user with id ${userId}`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteFavorite = async (req, res, next) => {
+  try {
+    const { _id: userId } = req.user;
+    const { id: recipeId } = req.params;
+
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) throw HttpError(404, `Recipe with id ${recipeId} not found`);
+
+    await Recipe.findByIdAndUpdate(
+      { _id: recipeId },
+      { $pull: { favorite: { $in: [userId] } } }
+    );
+    res.json({
+      message: `Recipe with id ${recipeId} removed from favorites of user with id ${userId}`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // learning stuff below, does not used in app
 // gets recipes by array of ids.
 const getManyRecipesByIds = async (req, res, next) => {
@@ -87,4 +134,6 @@ module.exports = {
   getFavorites,
   getMyRecipes,
   getManyRecipesByIds,
+  addFavorite,
+  deleteFavorite,
 };

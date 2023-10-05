@@ -6,6 +6,8 @@ const {
   getManyRecipesByIds,
   getMyRecipes,
   getFavorites,
+  addFavorite,
+  deleteFavorite,
 } = require("../../controllers/recipesCtrl");
 const { isValidId } = require("../../middlewares/");
 const authenticate = require("../../middlewares/authenticate");
@@ -15,6 +17,10 @@ router.use(authenticate); // middleware that authenticate user by token, applies
 router.get("/", getAllRecipes);
 
 router.get("/favorites", getFavorites);
+
+router.post("/favorites/:id", addFavorite);
+
+router.put("/favorites/:id", deleteFavorite);
 
 router.get("/my-recipes", getMyRecipes);
 
