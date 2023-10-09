@@ -1,5 +1,9 @@
-const { HttpError } = require("../helpers");
+const sharp = require("sharp");
+const { HttpError, cloudinary } = require("../helpers");
 const Recipe = require("../models/recipe");
+
+const fs = require("fs/promises");
+const path = require("path");
 
 const getAllRecipes = async (req, res, next) => {
   try {
@@ -33,6 +37,46 @@ const getRecipeById = async (req, res, next) => {
     if (!recipe) {
       throw HttpError(404, `Recipe with id ${id} not found`);
     }
+    res.json(recipe);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const addRecipe = async (req, res, next) => {
+  try {
+    const { _id: owner } = req.user;
+    const { path: oldPath, filename } = req.file;
+
+    const newPath = oldPath.replace(/\.[^/.]+$/, "") + ".webp";
+    await sharp(oldPath).webp({ quality: 60 }).toFile(newPath);
+
+    const fileData = await cloudinary.uploader.upload(newPath, {
+      folder: "recipes",
+    });
+    const preview = fileData.url;
+    const insertIdx = preview.indexOf("upload/");
+    // creats url for compressed preview img
+    const thumb =
+      preview.slice(0, insertIdx) +
+      "upload/q_30/" +
+      preview.slice(insertIdx + 7);
+
+    await fs.unlink(oldPath); // deletes uplouded file from 'temp' folder
+    await fs.unlink(newPath);
+
+    // stuff to save uploaded files to public folder:
+    /* const moviesDir = path.resolve("public", "recipes");
+    const newPath = path.join(moviesDir, filename);
+    fs.rename(oldPath, newPath);
+    const preview = path.join("recipes", filename); */
+
+    const recipe = await Recipe.create({
+      ...req.body,
+      preview,
+      thumb,
+      owner,
+    });
     res.json(recipe);
   } catch (error) {
     next(error);
@@ -136,4 +180,5 @@ module.exports = {
   getManyRecipesByIds,
   addFavorite,
   deleteFavorite,
+  addRecipe,
 };
