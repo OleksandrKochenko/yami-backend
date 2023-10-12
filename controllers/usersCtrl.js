@@ -39,10 +39,10 @@ const signin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    if (!user) throw HttpError(401, "Authorization error");
+    if (!user) throw HttpError(401, "Email or password is wrong");
 
     const pswrdCompare = await bcrypt.compare(password, user.password);
-    if (!pswrdCompare) throw HttpError(401, "Authorization error");
+    if (!pswrdCompare) throw HttpError(401, "Email or password is wrong");
 
     const payload = {
       id: user._id,
@@ -59,8 +59,8 @@ const signin = async (req, res, next) => {
 
 const getCurrent = async (req, res, next) => {
   try {
-    const { name, email } = req.user;
-    res.json({ name, email });
+    const { name, email, avatarURL } = req.user;
+    res.json({ name, email, avatarURL });
   } catch (error) {
     next(error);
   }
