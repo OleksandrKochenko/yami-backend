@@ -17,7 +17,7 @@ router.use(authenticate); // middleware that authenticate user by token, applies
 router.get("/", getAllRecipes);
 
 // upload.array("preview", 3) - can add 3 files to field 'preview'
-// uoload.fields([{name: "preview", maxCount: 3}, {name: "thumb", maxCount: 2}]) - can add 3 files to field 'preview' & 2 files - to field 'thumb'
+// upload.fields([{name: "preview", maxCount: 3}, {name: "thumb", maxCount: 2}]) - can add 3 files to field 'preview' & 2 files - to field 'thumb'
 router.post("/", upload.single("preview"), isFileUpload, addRecipe);
 
 router.get("/favorites", getFavorites);
