@@ -21,9 +21,13 @@ const getAllRecipes = async (req, res, next) => {
         limit,
       }
     );
+    const total = await Recipe.find({
+      $or: [{ title: regex }, { category }, { "ingredients.id": ingredient }],
+    }).countDocuments();
+
     // const result = await Recipe.find({}, 'title category'); // returns all recipes only with fields 'title' and 'category'
     // const result = await Recipe.find({}, '-area -youtube'); // returns all recipes without fields 'area' and 'youtube'
-    res.json({ regex: { value: regex.source }, recipes });
+    res.json({ total, recipes });
   } catch (error) {
     next(error);
   }
@@ -86,13 +90,15 @@ const addRecipe = async (req, res, next) => {
 const getMyRecipes = async (req, res, next) => {
   try {
     const { _id: owner } = req.user;
-    const { page = 2, limit = 1 } = req.query;
+    const { page = 1, limit = 8 } = req.query;
     const skip = (page - 1) * limit;
     const result = await Recipe.find({ owner }, "", {
       skip,
       limit,
     }).populate("owner", "name email");
-    res.json(result);
+    const total = await Recipe.find({ owner }).countDocuments();
+
+    res.json({ total, result });
   } catch (error) {
     next(error);
   }
