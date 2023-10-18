@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const logger = require("morgan");
 require("dotenv").config();
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
 
 const categoriesRouter = require("./routes/api/categories");
 const recipesRouter = require("./routes/api/recipes");
@@ -19,6 +21,8 @@ app.use(cors()); // to available cross-domain requests (CORS)
 app.use(express.json()); // sets body parser to req.body
 
 app.use(express.static("public")); // allows to get static files from folder "public"
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/auth", authRouter);
 

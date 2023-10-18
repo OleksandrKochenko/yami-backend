@@ -92,13 +92,13 @@ const getMyRecipes = async (req, res, next) => {
     const { _id: owner } = req.user;
     const { page = 1, limit = 8 } = req.query;
     const skip = (page - 1) * limit;
-    const result = await Recipe.find({ owner }, "", {
+    const recipes = await Recipe.find({ owner }, "", {
       skip,
       limit,
     }).populate("owner", "name email");
     const total = await Recipe.find({ owner }).countDocuments();
 
-    res.json({ total, result });
+    res.json({ total, recipes });
   } catch (error) {
     next(error);
   }
@@ -113,7 +113,10 @@ const getFavorites = async (req, res, next) => {
       skip,
       limit,
     });
-    res.json(recipes);
+    const total = await Recipe.find({
+      favorite: { $in: [_id] },
+    }).countDocuments();
+    res.json({ total, recipes });
   } catch (error) {
     next(error);
   }
@@ -132,7 +135,7 @@ const addFavorite = async (req, res, next) => {
       favorite: { $in: userId },
     });
     if (alreadyFavoriteRecipe)
-      throw HttpError(409, `Recipe with id ${recipeId} already in favorite`);
+      throw HttpError(409, `Recipe with id ${recipeId} already in favorites`);
 
     await Recipe.findByIdAndUpdate(
       { _id: recipeId },
