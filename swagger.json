@@ -20,14 +20,14 @@
   },
   "servers": [
     {
-      "url": "https://virtserver.swaggerhub.com/KOCHENKOFOP/YummyApi/1.0.0",
-      "description": "SwaggerHub API Auto Mocking"
-    },
-    {
       "url": "https://yummy-pet-project.onrender.com"
     },
     {
       "url": "http://localhost:4000/"
+    },
+    {
+      "url": "https://virtserver.swaggerhub.com/KOCHENKOFOP/YummyApi/1.0.0",
+      "description": "SwaggerHub API Auto Mocking"
     }
   ],
   "tags": [
