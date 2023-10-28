@@ -8,6 +8,7 @@ const swaggerDocument = require("./swagger.json");
 const categoriesRouter = require("./routes/api/categories");
 const recipesRouter = require("./routes/api/recipes");
 const authRouter = require("./routes/auth/auth");
+const userRouter = require("./routes/user/user");
 const frontPageRouter = require("./routes/api/frontPage");
 const ingredientsRouter = require("./routes/api/ingredients");
 
@@ -25,6 +26,8 @@ app.use(express.static("public")); // allows to get static files from folder "pu
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/auth", authRouter);
+
+app.use("/user", userRouter);
 
 app.use("/api/categories", categoriesRouter);
 

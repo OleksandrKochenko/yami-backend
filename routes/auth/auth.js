@@ -1,4 +1,5 @@
 const express = require("express");
+const router = express.Router();
 const {
   validateUserRegister,
   validateUserLogin,
@@ -10,8 +11,6 @@ const {
   logout,
 } = require("../../controllers/usersCtrl");
 const authenticate = require("../../middlewares/authenticate");
-
-const router = express.Router();
 
 router.post("/signup", validateUserRegister, signup);
 

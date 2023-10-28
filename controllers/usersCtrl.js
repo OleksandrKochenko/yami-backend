@@ -76,9 +76,42 @@ const logout = async (req, res, next) => {
   }
 };
 
+const updateUser = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+    const { name, password } = req.body;
+    if (!name && !password)
+      throw HttpError(400, "Email or password is not provided");
+    const hashedPswrd = password && (await bcrypt.hash(password, 10));
+    const user =
+      (name &&
+        (await User.findOneAndUpdate(
+          _id,
+          { name },
+          {
+            returnDocument: "after", // returns document after update
+            projection: { email: 1, name: 1, avatarURL: 1, token: 1 }, // returns listed fields of document
+          }
+        ))) ||
+      (password &&
+        (await User.findOneAndUpdate(
+          _id,
+          { password: hashedPswrd },
+          {
+            returnDocument: "after", // returns document after update
+            projection: { email: 1, name: 1, avatarURL: 1, token: 1 }, // returns listed fields of document
+          }
+        )));
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signup,
   signin,
   getCurrent,
   logout,
+  updateUser,
 };

@@ -43,4 +43,11 @@ const userLoginSchema = Joi.object({
     }),
 });
 
-module.exports = { userRegisterSchema, userLoginSchema };
+const userUpdateSchema = Joi.object({
+  name: Joi.string(),
+  password: Joi.string().min(6).messages({
+    "string.min": "invalid length of password",
+  }),
+});
+
+module.exports = { userRegisterSchema, userLoginSchema, userUpdateSchema };
